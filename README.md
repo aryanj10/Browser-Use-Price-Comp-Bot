@@ -60,29 +60,29 @@ python compare_prices.py "ipad air m3 11 inch 128 gb"
 ## Sample Output
 
 ```json
-INFO     [Agent] ✅ Task completed successfully
 {
   "query": "ipad air m3 11 inch 128 gb",
   "products": [
     {
       "source": "amazon",
-      "title": "Apple 11-inch iPad Air (5th Generation):iPad Air (5th Gen) - with M1 chip, 10.9-inch Liquid Retina Display, 64GB, Wi-Fi 6, All-Day Battery Life - Space Gray",
+      "title": "Apple iPad Air 11-inch with M3 chip Built for Apple Intelligence, Liquid Retina Display, 128GB, 12MP Front/Back Camera, Wi-Fi 6E, Touch ID, All-Day Battery Life — Space Gray",
       "price": 559.0,
       "currency": "USD",
-      "url": "/Apple-11-inch-Liquid-Retina-Display/dp/B09V3J933W",
-      "rating": 4.7,
-      "reviews": 11000,
-      "availability": "In stock",
-      "shipped_and_sold_by_retailer": false
+      "url": "https://www.amazon.com/Apple-11-inch-Intelligence-Display-All-Day/dp/B0DZ76BN5D",
+      "rating": 4.8,
+      "reviews": 1553,
+      "availability": "In Stock",
+      "shipped_and_sold_by_retailer": true
     },
     {
+      "source": "walmart",
       "title": "2025 Apple 11-inch iPad Air M3, Built for Apple Intelligence, Wi-Fi 128GB - Space Gray",
       "price": 557.5,
       "currency": "USD",
-      "url": "/ip/2025-Apple-11-inch-iPad-Air-M3-Built-for-Apple-Intelligence-Wi-Fi-128GB-Space-Gray/15450254481?classType=VARIANT&athbdg=L1103&from=/search",
+      "url": "https://www.walmart.com/ip/2025-Apple-11-inch-iPad-Air-M3-Built-for-Apple-Intelligence-Wi-Fi-128GB-Space-Gray/15450254481?classType=VARIANT&from=%2Fsearch",
       "rating": 4.5,
-      "reviews": 296,
-      "availability": "Free shipping, arrives in 3+ days",
+      "reviews": 297,
+      "availability": "Available for shipping (Only 9 left)",
       "shipped_and_sold_by_retailer": false
     }
   ],

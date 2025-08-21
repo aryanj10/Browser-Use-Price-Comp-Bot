@@ -5,6 +5,7 @@ from browser_use import Agent, Controller, BrowserSession
 from browser_use.llm import ChatGoogle
 from dotenv import load_dotenv
 from browser_use.browser import BrowserProfile
+from typing import get_type_hints
 
 load_dotenv()
 api_key = os.getenv('GOOGLE_API_KEY')
@@ -13,13 +14,45 @@ api_key = os.getenv('GOOGLE_API_KEY')
 class Product(BaseModel):
     source: str                 # "amazon" or "walmart"
     title: str
-    price: float                # numeric, e.g., 129.99
+    price: float
     currency: str = "USD"
-    url: str
+    url: Optional[str] = None   # <- change here
     rating: Optional[float] = None
     reviews: Optional[int] = None
     availability: Optional[str] = None
     shipped_and_sold_by_retailer: Optional[bool] = None
+
+def normalize_nulls(obj: dict, model_class):
+    """
+    Recursively replace None/null values with safe defaults based on Pydantic type hints.
+    """
+    hints = get_type_hints(model_class)
+
+    for key, typ in hints.items():
+        if key not in obj:
+            continue
+        val = obj[key]
+
+        # If value is a dict and the field is a BaseModel, recurse
+        if isinstance(val, dict) and hasattr(typ, "__fields__"):
+            normalize_nulls(val, typ)
+        # If value is a list of BaseModels, recurse on each
+        elif isinstance(val, list) and hasattr(typ, "__args__"):
+            inner_type = typ.__args__[0]
+            if hasattr(inner_type, "__fields__"):
+                for item in val:
+                    normalize_nulls(item, inner_type)
+        else:
+            # Replace None with default
+            if val is None:
+                if typ == str or getattr(typ, "__origin__", None) is Optional:
+                    obj[key] = ""
+                elif typ == float or typ == Optional[float]:
+                    obj[key] = None
+                elif typ == int or typ == Optional[int]:
+                    obj[key] = None
+                elif typ == bool or typ == Optional[bool]:
+                    obj[key] = None
 
 class CompareResult(BaseModel):
     query: str
@@ -132,7 +165,7 @@ async def main(query: str):
     )
     session = BrowserSession(browser_profile=profile)
 
-    llm = ChatGoogle(model="gemini-2.5-flash-lite", temperature=0.2)
+    llm = ChatGoogle(model="gemini-2.5-pro", temperature=0.0)
     agent = Agent(task=build_task(query), llm=llm, controller=controller, browser_session=session)
 
     history = await agent.run()
@@ -155,6 +188,7 @@ async def main(query: str):
     except Exception:
         pass
 
+    normalize_nulls(obj, CompareResult)
     parsed = CompareResult.model_validate(obj)
 
     # Enrich
